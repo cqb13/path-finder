@@ -53,7 +53,7 @@ impl OptionSelect {
         if self.options.is_empty() {
             panic!("No options to select from");
         }
-        println!("{}:", self.title);
+        println!("{}", self.title);
 
         loop {
             for (i, option) in self.options.iter().enumerate() {

@@ -23,7 +23,7 @@ impl NumberInput {
             message: String::new(),
             min: 0,
             max: None,
-            full_size: 2,
+            full_size: 3,
             reset_size: 1,
         }
     }
