@@ -1,0 +1,17 @@
+[package]
+name = "path-finder"
+version = "0.1.0"
+edition = "2021"
+authors = ["cqb13 <cqb13.dev@gmail.com>"]
+license = "MIT"
+description = "A simple path finding algorithm visualizer"
+readme = "README.md"
+homepage = "https://github.com/cqb13/path-finder"
+repository = "https://github.com/cqb13/path-finder"
+keywords = ["path-finding", "algorithm", "visualizer", "rust", "crossterm"]
+categories = ["algorithms", "visualization", "graphics", "games-and-graphics"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+crossterm = "0.27.0"
