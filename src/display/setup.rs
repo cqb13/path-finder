@@ -46,6 +46,6 @@ pub fn config_setup() -> SetupConfig {
     SetupConfig::new(GridSize::new(width, height), algorithm)
 }
 
-pub fn pathfinding_setup() {
+pub fn map_builder() {
     unimplemented!()
 }

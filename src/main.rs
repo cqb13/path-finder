@@ -1,8 +1,8 @@
-pub mod tui;
 pub mod display;
+pub mod tui;
 
-use crate::display::welcome::welcome;
 use crate::display::setup::config_setup;
+use crate::display::welcome::welcome;
 use crate::display::Display;
 
 pub struct Pathfinding {
@@ -27,6 +27,18 @@ pub enum GridBlock {
     Obstacle,
     Empty,
 }
+
+impl GridBlock {
+    pub fn to_visual_block(&self) -> &str {
+        match self {
+            GridBlock::Start => "S",
+            GridBlock::End => "E",
+            GridBlock::Obstacle => "X",
+            GridBlock::Empty => " ",
+        }
+    }
+}
+
 pub struct Point {
     pub x: u32,
     pub y: u32,
@@ -85,6 +97,15 @@ impl GridMap {
     pub fn set_grid(&mut self, point: Point, grid: GridBlock) {
         self.grid[point.y as usize][point.x as usize].grid = grid;
     }
+
+    pub fn render(&self) {
+        for row in &self.grid {
+            for element in row {
+                print!("{}", element.grid.to_visual_block());
+            }
+            println!();
+        }
+    }
 }
 
 pub struct SetupConfig {
@@ -94,13 +115,17 @@ pub struct SetupConfig {
 
 impl SetupConfig {
     pub fn new(grid_size: GridSize, algorithm: Algorithm) -> SetupConfig {
-        SetupConfig { grid_size, algorithm }
+        SetupConfig {
+            grid_size,
+            algorithm,
+        }
     }
 }
 
 fn main() {
     welcome();
     let base_config = config_setup();
-
-
+    let mut grid_map = GridMap::new(base_config.grid_size);
+    // first add obstacles
+    // then add start and end
 }
