@@ -1,6 +1,4 @@
-Absolutely, let's dive into a bit more detail on each of these project ideas:
-
-### 1. Pathfinding Visualizer
+# 1. Pathfinding Visualizer
 
 **Objective**: To create a CLI/TUI application that visualizes the execution of various pathfinding algorithms on a grid or graph. The user should be able to set start and end points, place obstacles, and choose an algorithm to visualize the pathfinding process.
 
