@@ -1,4 +1,4 @@
-# 1. Pathfinding Visualizer
+# Pathfinding Visualizer
 
 **Objective**: To create a CLI/TUI application that visualizes the execution of various pathfinding algorithms on a grid or graph. The user should be able to set start and end points, place obstacles, and choose an algorithm to visualize the pathfinding process.
 
