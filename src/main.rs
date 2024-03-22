@@ -5,7 +5,7 @@ use crate::display::setup::config_setup;
 use crate::display::welcome::welcome;
 use crate::display::Display;
 
-pub struct Pathfinding {
+pub struct Pathfinder {
     pub grid: GridMap,
     pub start: Point,
     pub end: Point,
@@ -25,16 +25,19 @@ pub enum GridBlock {
     Start,
     End,
     Obstacle,
+    Path,
     Empty,
 }
 
 impl GridBlock {
+    //▢▩▣◯□■
     pub fn to_visual_block(&self) -> &str {
         match self {
-            GridBlock::Start => "S",
-            GridBlock::End => "E",
-            GridBlock::Obstacle => "X",
-            GridBlock::Empty => " ",
+            GridBlock::Start => "▣",
+            GridBlock::End => "▢",
+            GridBlock::Obstacle => "■",
+            GridBlock::Path => "⊡",
+            GridBlock::Empty => "•",
         }
     }
 }
@@ -101,7 +104,7 @@ impl GridMap {
     pub fn render(&self) {
         for row in &self.grid {
             for element in row {
-                print!("{}", element.grid.to_visual_block());
+                print!(" {} ", element.grid.to_visual_block());
             }
             println!();
         }
@@ -128,4 +131,15 @@ fn main() {
     let mut grid_map = GridMap::new(base_config.grid_size);
     // first add obstacles
     // then add start and end
+    
+    // add some temp blocks
+    grid_map.set_grid(Point::new(5, 5), GridBlock::Start);
+    grid_map.set_grid(Point::new(10, 10), GridBlock::End);
+    grid_map.set_grid(Point::new(7, 7), GridBlock::Obstacle);
+    grid_map.set_grid(Point::new(7, 8), GridBlock::Obstacle);
+    grid_map.set_grid(Point::new(7, 9), GridBlock::Obstacle);
+    grid_map.set_grid(Point::new(6, 8), GridBlock::Obstacle);
+    grid_map.set_grid(Point::new(8, 8), GridBlock::Path);
+
+    grid_map.render();
 }
