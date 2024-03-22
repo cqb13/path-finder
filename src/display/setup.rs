@@ -1,7 +1,18 @@
 use crate::display::Display;
 use crate::tui::number_input::NumberInput;
 use crate::tui::option_select::OptionSelect;
-use crate::{Algorithm, GridSize, SetupConfig};
+use crate::{Algorithm, GridMap, GridSize, SetupConfig};
+
+pub enum MapBuilderMode {
+    Obstacle,
+    Start,
+    End,
+}
+
+enum ObstacleGeneration {
+    Random,
+    Manual,
+}
 
 pub fn config_setup() -> SetupConfig {
     let mut display = Display::new();
@@ -46,6 +57,6 @@ pub fn config_setup() -> SetupConfig {
     SetupConfig::new(GridSize::new(width, height), algorithm)
 }
 
-pub fn map_builder() {
+pub fn map_builder(mode: MapBuilderMode, grid: &mut GridMap) -> GridMap {
     unimplemented!()
 }

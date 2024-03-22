@@ -1,7 +1,7 @@
 pub mod display;
 pub mod tui;
 
-use crate::display::setup::config_setup;
+use crate::display::setup::{config_setup, map_builder, MapBuilderMode};
 use crate::display::welcome::welcome;
 
 pub struct Pathfinder {
@@ -127,8 +127,9 @@ fn main() {
     welcome();
     let base_config = config_setup();
     let mut grid_map = GridMap::new(base_config.grid_size);
-    // first add obstacles
-    // then add start and end
+    grid_map = map_builder(MapBuilderMode::Obstacle, &mut grid_map);
+    grid_map = map_builder(MapBuilderMode::Start, &mut grid_map);
+    grid_map = map_builder(MapBuilderMode::End, &mut grid_map);
 
     grid_map.render();
 }
