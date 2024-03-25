@@ -15,6 +15,7 @@ pub struct OptionSelect {
     options: Vec<String>,
     pub full_size: u16,
     reset_size: u16,
+    manual_clear: bool,
 }
 
 impl OptionSelect {
@@ -24,6 +25,7 @@ impl OptionSelect {
             options: Vec::new(),
             full_size: 1, // always a title line, the other options are added to this
             reset_size: 0,
+            manual_clear: false,
         }
     }
 
@@ -36,6 +38,11 @@ impl OptionSelect {
         self.options.push(option.to_string());
         self.full_size += 1;
         self.reset_size += 1;
+        self
+    }
+
+    pub fn manual_clear(mut self) -> Self {
+        self.manual_clear = true;
         self
     }
 
@@ -92,6 +99,9 @@ impl OptionSelect {
                     }
                     KeyCode::Enter => {
                         terminal::disable_raw_mode().expect("Failed to disable raw mode");
+                        if !self.manual_clear {
+                            refresh_display(self.full_size);
+                        }
                         return self.options[current_option].to_string();
                     }
                     _ => {}

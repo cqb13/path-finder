@@ -11,6 +11,7 @@ use crate::tui::refresh_display;
 pub struct Confirm {
     message: String,
     pub full_size: u16,
+    manual_clear: bool,
 }
 
 impl Confirm {
@@ -18,11 +19,17 @@ impl Confirm {
         Confirm {
             message: String::new(),
             full_size: 2,
+            manual_clear: false,
         }
     }
 
     pub fn set_message(mut self, message: String) -> Self {
         self.message = message;
+        self
+    }
+
+    pub fn manual_clear(mut self) -> Self {
+        self.manual_clear = true;
         self
     }
 
@@ -46,12 +53,16 @@ impl Confirm {
                     }
                     KeyCode::Char('c') => {
                         terminal::disable_raw_mode().expect("Failed to disable raw mode");
-                        refresh_display(self.full_size);
+                        if self.manual_clear {
+                            refresh_display(self.full_size);
+                        }
                         return false;
                     }
                     KeyCode::Enter => {
                         terminal::disable_raw_mode().expect("Failed to disable raw mode");
-                        refresh_display(self.full_size);
+                        if !self.manual_clear {
+                            refresh_display(self.full_size);
+                        }
                         return true;
                     }
                     _ => {}

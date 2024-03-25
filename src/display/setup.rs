@@ -1,4 +1,3 @@
-use crate::display::Display;
 use crate::tui::number_input::NumberInput;
 use crate::tui::option_select::OptionSelect;
 use crate::{Algorithm, GridMap, GridSize, SetupConfig};
@@ -9,39 +8,27 @@ pub enum MapBuilderMode {
     End,
 }
 
-enum ObstacleGeneration {
-    Random,
-    Manual,
-}
-
 pub fn config_setup() -> SetupConfig {
-    let mut display = Display::new();
-    let width_selector = NumberInput::new()
+    let width = NumberInput::new()
         .set_message("Enter the gird width:")
         .set_min(5)
-        .set_max(100);
-    display.add_height(width_selector.full_size);
-    let width = width_selector.ask() as u32;
-    display.refresh();
+        .set_max(100)
+        .ask() as u32;
     let height = NumberInput::new()
         .set_message("Enter the grid height:")
         .set_min(5)
         .set_max(100)
         .ask() as u32;
-    display.refresh();
-    display.reset_height();
 
-    let algorithm_selector = OptionSelect::new()
+    let algorithm_selection = OptionSelect::new()
         .set_title("Select an algorithm:")
         .add_option("Breadth First Search")
         .add_option("Depth First Search")
         .add_option("Dijkstra")
         .add_option("A Star")
         .add_option("Greedy Best First Search")
-        .add_option("Bellman Ford");
-    display.add_height(algorithm_selector.full_size);
-    let algorithm_selection = algorithm_selector.ask();
-
+        .add_option("Bellman Ford")
+        .ask();
     let algorithm = match algorithm_selection.as_str() {
         "Breadth First Search" => Algorithm::BreadthFirstSearch,
         "Depth First Search" => Algorithm::DepthFirstSearch,
@@ -52,11 +39,31 @@ pub fn config_setup() -> SetupConfig {
         _ => panic!("algorithm selection has no matching algorithm"),
     };
 
-    display.refresh();
-
     SetupConfig::new(GridSize::new(width, height), algorithm)
 }
 
-pub fn map_builder(mode: MapBuilderMode, grid: &mut GridMap) -> GridMap {
-    unimplemented!()
+pub fn map_builder(mode: MapBuilderMode, mut grid: GridMap) -> GridMap {
+    match mode {
+        MapBuilderMode::Obstacle => {
+            let obstacle_creation = OptionSelect::new()
+                .set_title("Select obstacle generation method:")
+                .add_option("Manual")
+                .add_option("Auto")
+                .add_option("Edit Auto")
+                .ask();
+
+            match obstacle_creation.as_str() {
+                "Manual" => {}
+                "Auto" => grid.generate_obstacles(),
+                "Edit Auto" => {
+                    grid.generate_obstacles();
+                }
+                _ => panic!("obstacle generation has no matching generation option"),
+            };
+        }
+        MapBuilderMode::Start => {}
+        MapBuilderMode::End => {}
+    }
+
+    grid
 }

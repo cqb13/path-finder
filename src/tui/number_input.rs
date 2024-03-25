@@ -15,6 +15,7 @@ pub struct NumberInput {
     max: Option<i32>,
     pub full_size: u16,
     reset_size: u16,
+    manual_clear: bool,
 }
 
 impl NumberInput {
@@ -25,6 +26,7 @@ impl NumberInput {
             max: None,
             full_size: 3,
             reset_size: 1,
+            manual_clear: false,
         }
     }
 
@@ -40,6 +42,11 @@ impl NumberInput {
 
     pub fn set_max(mut self, max: i32) -> Self {
         self.max = Some(max);
+        self
+    }
+
+    pub fn manual_clear(mut self) -> Self {
+        self.manual_clear = true;
         self
     }
 
@@ -87,9 +94,15 @@ impl NumberInput {
                         if current_number >= self.min {
                             if let Some(max) = self.max {
                                 if current_number <= max {
+                                    if !self.manual_clear {
+                                        refresh_display(self.full_size);
+                                    }
                                     return current_number;
                                 }
                             } else {
+                                if !self.manual_clear {
+                                    refresh_display(self.full_size);
+                                }
                                 return current_number;
                             }
                         }

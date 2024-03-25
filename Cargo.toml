@@ -15,3 +15,4 @@ categories = ["algorithms", "visualization", "graphics", "games-and-graphics"]
 
 [dependencies]
 crossterm = "0.27.0"
+rand = "0.8.4"
