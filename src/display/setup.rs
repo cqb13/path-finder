@@ -1,6 +1,10 @@
 use crate::tui::number_input::NumberInput;
 use crate::tui::option_select::OptionSelect;
-use crate::{Algorithm, GridMap, GridSize, SetupConfig};
+use crate::{Algorithm, GridMap, GridSize, SetupConfig, GridBlock, Point};
+use crossterm::{
+    event::{read, Event, KeyCode, KeyEvent, KeyEventKind},
+    terminal,
+};
 
 pub enum MapBuilderMode {
     Obstacle,
@@ -66,4 +70,43 @@ pub fn map_builder(mode: MapBuilderMode, mut grid: GridMap) -> GridMap {
     }
 
     grid
+}
+
+fn placement_loop(grid: &mut GridMap, block: GridBlock) -> Point {
+    let mut block_position = Point::new(0, 0);
+    loop {
+        let event = read().unwrap();
+        match event {
+            Event::Key(KeyEvent {
+                code,
+                kind: KeyEventKind::Press,
+                ..
+            }) => match code {
+                KeyCode::Char('q') => {
+                    terminal::disable_raw_mode().expect("Failed to disable raw mode");
+                    println!("Quitting...");
+                    std::process::exit(0);
+                }
+                KeyCode::Up => {
+                    block_position.y -= 1;
+                }
+                KeyCode::Down => {
+                    block_position.y += 1;
+                }
+                KeyCode::Left => {
+                    block_position.x -= 1;
+                }
+                KeyCode::Right => {
+                    block_position.x += 1;
+                }
+                KeyCode::Enter => {
+                    terminal::disable_raw_mode().expect("Failed to disable raw mode");
+                    return block_position;
+                }
+                _ => {}
+            },
+            _ => {}
+        }
+        terminal::disable_raw_mode().expect("Failed to disable raw mode");
+    }
 }
