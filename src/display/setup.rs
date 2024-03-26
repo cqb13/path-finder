@@ -1,6 +1,6 @@
 use crate::tui::number_input::NumberInput;
 use crate::tui::option_select::OptionSelect;
-use crate::{Algorithm, GridMap, GridSize, SetupConfig, GridBlock, Point};
+use crate::{Algorithm, GridBlock, GridMap, GridSize, Point, SetupConfig};
 use crossterm::{
     event::{read, Event, KeyCode, KeyEvent, KeyEventKind},
     terminal,
@@ -88,16 +88,32 @@ fn placement_loop(grid: &mut GridMap, block: GridBlock) -> Point {
                     std::process::exit(0);
                 }
                 KeyCode::Up => {
-                    block_position.y -= 1;
+                    if block_position.y > 0 {
+                        block_position.y -= 1;
+                    } else {
+                        block_position.y = grid.size.height - 1;
+                    }
                 }
                 KeyCode::Down => {
-                    block_position.y += 1;
+                    if block_position.y < grid.size.height - 1 {
+                        block_position.y += 1;
+                    } else {
+                        block_position.y = 0;
+                    }
                 }
                 KeyCode::Left => {
-                    block_position.x -= 1;
+                    if block_position.x > 0 {
+                        block_position.x -= 1;
+                    } else {
+                        block_position.x = grid.size.width - 1;
+                    }
                 }
                 KeyCode::Right => {
-                    block_position.x += 1;
+                    if block_position.x < grid.size.width - 1 {
+                        block_position.x += 1;
+                    } else {
+                        block_position.x = 0;
+                    }
                 }
                 KeyCode::Enter => {
                     terminal::disable_raw_mode().expect("Failed to disable raw mode");
