@@ -1,3 +1,10 @@
+pub mod a_star;
+pub mod bellman_ford;
+pub mod breadth_first_search;
+pub mod depth_first_search;
+pub mod dijkstra;
+pub mod greedy_best_first_search;
+
 use rand::Rng;
 
 pub struct Pathfinder {
