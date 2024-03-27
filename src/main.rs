@@ -1,8 +1,6 @@
 pub mod display;
 pub mod tui;
 
-use std::path;
-
 use crate::display::setup::{config_setup, map_builder, MapBuilderMode};
 use crate::display::welcome::welcome;
 use crate::tui::confirm::Confirm;
