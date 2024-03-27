@@ -75,12 +75,12 @@ impl GridBlock {
 }
 
 pub struct Point {
-    pub x: u32,
-    pub y: u32,
+    pub x: u16,
+    pub y: u16,
 }
 
 impl Point {
-    pub fn new(x: u32, y: u32) -> Point {
+    pub fn new(x: u16, y: u16) -> Point {
         Point { x, y }
     }
 }
@@ -97,12 +97,12 @@ impl GridElement {
 }
 
 pub struct GridSize {
-    pub width: u32,
-    pub height: u32,
+    pub width: u16,
+    pub height: u16,
 }
 
 impl GridSize {
-    pub fn new(width: u32, height: u32) -> GridSize {
+    pub fn new(width: u16, height: u16) -> GridSize {
         GridSize { width, height }
     }
 }
@@ -110,7 +110,7 @@ impl GridSize {
 pub struct GridMap {
     pub grid: Vec<Vec<GridElement>>,
     pub size: GridSize,
-    pub full_size: u32,
+    pub full_size: u16,
 }
 
 impl GridMap {
@@ -131,12 +131,12 @@ impl GridMap {
         }
     }
 
-    pub fn get_grid(&self, point: Point) -> &GridBlock {
+    pub fn get_block(&self, point: &Point) -> &GridBlock {
         &self.grid[point.y as usize][point.x as usize].grid
     }
 
-    pub fn set_grid(&mut self, point: Point, grid: GridBlock) {
-        self.grid[point.y as usize][point.x as usize].grid = grid;
+    pub fn set_block(&mut self, point: &Point, block: GridBlock) {
+        self.grid[point.y as usize][point.x as usize].grid = block;
     }
 
     /**
@@ -169,10 +169,10 @@ impl GridMap {
         let retries = 10;
 
         for _i1 in 0..n {
-            let mut x1: u32;
-            let mut y1: u32;
-            let mut x2: u32;
-            let mut y2: u32;
+            let mut x1: u16;
+            let mut y1: u16;
+            let mut x2: u16;
+            let mut y2: u16;
             for _ in 0..retries {
                 x1 = rand::thread_rng().gen_range(0..self.size.width);
                 y1 = rand::thread_rng().gen_range(0..self.size.height);
@@ -216,6 +216,19 @@ impl GridMap {
         }
     }
 
+    pub fn render_with_selector(&self, point: &Point, selector: &GridBlock) {
+        for (y, row) in self.grid.iter().enumerate() {
+            for (x, element) in row.iter().enumerate() {
+                if point.x == x as u16 && point.y == y as u16 {
+                    print!(" {} ", selector.to_visual_block());
+                } else {
+                    print!(" {} ", element.grid.to_visual_block());
+                }
+            }
+            println!();
+        }
+    }
+
     pub fn render(&self) {
         for row in &self.grid {
             for element in row {
@@ -247,6 +260,8 @@ fn main() {
     grid_map = map_builder(MapBuilderMode::Obstacle, grid_map);
     grid_map = map_builder(MapBuilderMode::Start, grid_map);
     grid_map = map_builder(MapBuilderMode::End, grid_map);
+
+    // confirm to start
 
     grid_map.render();
 }
