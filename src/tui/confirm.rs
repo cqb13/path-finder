@@ -23,8 +23,8 @@ impl Confirm {
         }
     }
 
-    pub fn set_message(mut self, message: String) -> Self {
-        self.message = message;
+    pub fn set_message(mut self, message: &str) -> Self {
+        self.message = message.to_string();
         self
     }
 

@@ -1,8 +1,11 @@
 pub mod display;
 pub mod tui;
 
+use std::path;
+
 use crate::display::setup::{config_setup, map_builder, MapBuilderMode};
 use crate::display::welcome::welcome;
+use crate::tui::confirm::Confirm;
 use rand::Rng;
 
 pub struct Pathfinder {
@@ -72,8 +75,29 @@ impl GridBlock {
             GridBlock::Empty => "•",
         }
     }
+
+    pub fn to_name(&self) -> &str {
+        match self {
+            GridBlock::Start => "Start",
+            GridBlock::End => "End",
+            GridBlock::Obstacle => "Obstacle",
+            GridBlock::Path => "Path",
+            GridBlock::Empty => "Empty",
+        }
+    }
+
+    pub fn to_block(&self) -> GridBlock {
+        match self {
+            GridBlock::Start => GridBlock::Start,
+            GridBlock::End => GridBlock::End,
+            GridBlock::Obstacle => GridBlock::Obstacle,
+            GridBlock::Path => GridBlock::Path,
+            GridBlock::Empty => GridBlock::Empty,
+        }
+    }
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct Point {
     pub x: u16,
     pub y: u16,
@@ -111,6 +135,8 @@ pub struct GridMap {
     pub grid: Vec<Vec<GridElement>>,
     pub size: GridSize,
     pub full_size: u16,
+    pub start: Point,
+    pub end: Point,
 }
 
 impl GridMap {
@@ -128,6 +154,8 @@ impl GridMap {
             grid,
             size,
             full_size,
+            start: Point::new(0, 0),
+            end: Point::new(0, 0),
         }
     }
 
@@ -135,8 +163,16 @@ impl GridMap {
         &self.grid[point.y as usize][point.x as usize].grid
     }
 
-    pub fn set_block(&mut self, point: &Point, block: GridBlock) {
-        self.grid[point.y as usize][point.x as usize].grid = block;
+    pub fn set_block(&mut self, point: &Point, block: &GridBlock) {
+        self.grid[point.y as usize][point.x as usize].grid = block.to_block();
+    }
+
+    pub fn set_start(&mut self, point: &Point) {
+        self.start = Point::new(point.x, point.y);
+    }
+
+    pub fn set_end(&mut self, point: &Point) {
+        self.end = Point::new(point.x, point.y);
     }
 
     /**
@@ -260,8 +296,20 @@ fn main() {
     grid_map = map_builder(MapBuilderMode::Obstacle, grid_map);
     grid_map = map_builder(MapBuilderMode::Start, grid_map);
     grid_map = map_builder(MapBuilderMode::End, grid_map);
-
-    // confirm to start
-
     grid_map.render();
+
+    let confirm_start = Confirm::new()
+        .set_message("Would you like to start the algorithm?")
+        .ask();
+
+    if !confirm_start {
+        return;
+    }
+
+    let pathfinder = Pathfinder {
+        start: grid_map.start,
+        end: grid_map.end,
+        grid: grid_map,
+        algorithm: base_config.algorithm,
+    };
 }

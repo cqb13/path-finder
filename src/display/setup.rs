@@ -68,15 +68,15 @@ pub fn map_builder(mode: MapBuilderMode, mut grid: GridMap) -> GridMap {
                     println!("Press 'S' to save and continue or 'Q' to quit");
                     loop {
                         let finished =
-                            placement_loop(&mut grid, GridBlock::Obstacle, &mut block_position);
+                            placement_loop(&mut grid, &GridBlock::Obstacle, &mut block_position);
                         if finished {
                             refresh_display(grid.full_size);
                             break;
                         }
                         if grid.get_block(&block_position) == &GridBlock::Obstacle {
-                            grid.set_block(&block_position, GridBlock::Empty);
+                            grid.set_block(&block_position, &GridBlock::Empty);
                         } else {
-                            grid.set_block(&block_position, GridBlock::Obstacle);
+                            grid.set_block(&block_position, &GridBlock::Obstacle);
                         }
                         refresh_display(grid.full_size);
                     }
@@ -85,14 +85,32 @@ pub fn map_builder(mode: MapBuilderMode, mut grid: GridMap) -> GridMap {
                 _ => panic!("obstacle generation has no matching generation option"),
             };
         }
-        MapBuilderMode::Start => {}
-        MapBuilderMode::End => {}
+        MapBuilderMode::Start | MapBuilderMode::End => {
+            let block = match mode {
+                MapBuilderMode::Start => GridBlock::Start,
+                MapBuilderMode::End => GridBlock::End,
+                _ => panic!("invalid block type"),
+            };
+
+            let mut block_position = Point::new(grid.size.width / 2, grid.size.height / 2);
+            println!("Place the {} block", block.to_name());
+            println!("Press 'S' to save and continue or 'Q' to quit");
+            placement_loop(&mut grid, &block, &mut block_position);
+            if block == GridBlock::Start {
+                grid.set_start(&block_position)
+            } else {
+                grid.set_end(&block_position)
+            }
+
+            grid.set_block(&block_position, &block);
+            refresh_display(grid.full_size + 2);
+        }
     }
 
     grid
 }
 
-fn placement_loop(grid: &mut GridMap, block: GridBlock, block_position: &mut Point) -> bool {
+fn placement_loop(grid: &mut GridMap, block: &GridBlock, block_position: &mut Point) -> bool {
     grid.render_with_selector(&block_position, &block);
     loop {
         terminal::enable_raw_mode().expect("Failed to enable raw mode");
