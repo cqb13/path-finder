@@ -13,6 +13,38 @@ pub enum MapBuilderMode {
     End,
 }
 
+pub enum MapCrowding {
+    Low,
+    Medium,
+    High,
+}
+
+impl MapCrowding {
+    pub fn min_obstacle_size(&self) -> u16 {
+        match self {
+            MapCrowding::Low => 1,
+            MapCrowding::Medium => 2,
+            MapCrowding::High => 3,
+        }
+    }
+
+    pub fn max_obstacle_size(&self) -> u16 {
+        match self {
+            MapCrowding::Low => 2,
+            MapCrowding::Medium => 3,
+            MapCrowding::High => 4,
+        }
+    }
+
+    pub fn convert_chance(&self) -> f32 {
+        match self {
+            MapCrowding::Low => 0.10,
+            MapCrowding::Medium => 0.20,
+            MapCrowding::High => 0.35,
+        }
+    }
+}
+
 pub fn config_setup() -> SetupConfig {
     let width = NumberInput::new()
         .set_message("Enter the gird width:")
@@ -58,10 +90,14 @@ pub fn map_builder(mode: MapBuilderMode, mut grid: GridMap) -> GridMap {
                 .ask();
 
             match obstacle_creation.as_str() {
-                "Auto" => grid.generate_obstacles(),
+                "Auto" => {
+                    let crowding = ask_for_crowding();
+                    grid.generate_obstacles(crowding);
+                }
                 "Edit Auto" | "Manual" => {
                     if "Edit Auto" == obstacle_creation.as_str() {
-                        grid.generate_obstacles();
+                        let crowding = ask_for_crowding();
+                        grid.generate_obstacles(crowding);
                     }
 
                     let mut block_position = Point::new(grid.size.width / 2, grid.size.height / 2);
@@ -108,6 +144,22 @@ pub fn map_builder(mode: MapBuilderMode, mut grid: GridMap) -> GridMap {
     }
 
     grid
+}
+
+fn ask_for_crowding() -> MapCrowding {
+    let crowding_selection = OptionSelect::new()
+        .set_title("Select obstacle crowding:")
+        .add_option("Low")
+        .add_option("Medium")
+        .add_option("High")
+        .ask();
+
+    match crowding_selection.as_str() {
+        "Low" => MapCrowding::Low,
+        "Medium" => MapCrowding::Medium,
+        "High" => MapCrowding::High,
+        _ => panic!("crowding selection has no matching crowding option"),
+    }
 }
 
 fn placement_loop(grid: &mut GridMap, block: &GridBlock, block_position: &mut Point) -> bool {

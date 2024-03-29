@@ -5,6 +5,7 @@ pub mod depth_first_search;
 pub mod dijkstra;
 pub mod greedy_best_first_search;
 
+use crate::display::setup::MapCrowding;
 use rand::Rng;
 
 pub struct Pathfinder {
@@ -15,9 +16,7 @@ pub struct Pathfinder {
 }
 
 pub trait PathFindingAlgorithm {
-    fn get_surrounding_blocks(&self, grid: &GridMap, point: &Point) {
-        
-    }
+    fn get_surrounding_blocks(&self, grid: &GridMap, point: &Point) {}
 }
 
 pub enum Algorithm {
@@ -185,7 +184,7 @@ impl GridMap {
      *
      * 2. Random Obstacle Sprinkling:
      *    - After the direct placement, the method iterates through the entire grid.
-     *    - For each cell not already marked as an obstacle, there's a fixed chance (35%) that it will be marked as an obstacle.
+     *    - For each cell not already marked as an obstacle, there's a fixed chance based on map crowding that it will be marked as an obstacle.
      *
      * This approach ensures a mix of sizable, strategically placed obstacles and smaller, randomly distributed ones, enhancing the grid's complexity.
      *
@@ -194,11 +193,11 @@ impl GridMap {
      * - The `rand::thread_rng().gen_range()` function is used for random number generation.
      *
      * Postconditions:
-     * - The grid will contain a mix of rectangular obstacles and randomly placed obstacles, subject to the limits of `n` obstacles and the 35% chance for any unmarked cell.
+     * - The grid will contain a mix of rectangular obstacles and randomly placed obstacles, subject to the limits of `n` obstacles and the `p` percent chance for any unmarked cell.
      */
-    pub fn generate_obstacles(&mut self) {
-        let min = 2;
-        let max = 3;
+    pub fn generate_obstacles(&mut self, crowding: MapCrowding) {
+        let min = crowding.min_obstacle_size();
+        let max = crowding.max_obstacle_size();
         let diff = max - min;
         let n = 5;
         let retries = 10;
@@ -244,7 +243,7 @@ impl GridMap {
                 if self.grid[j as usize][i as usize].grid == GridBlock::Obstacle {
                     continue;
                 }
-                if rand::thread_rng().gen_range(0.0..1.0) < 0.35 {
+                if rand::thread_rng().gen_range(0.0..1.0) < crowding.convert_chance() {
                     self.grid[j as usize][i as usize].grid = GridBlock::Obstacle;
                 }
             }
