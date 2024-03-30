@@ -44,4 +44,6 @@ fn main() {
         grid: grid_map,
         algorithm: base_config.algorithm,
     };
+
+    pathfinder.run();
 }

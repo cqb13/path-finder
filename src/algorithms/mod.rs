@@ -15,8 +15,38 @@ pub struct Pathfinder {
     pub algorithm: Algorithm,
 }
 
-pub trait PathFindingAlgorithm {
-    fn get_surrounding_blocks(&self, grid: &GridMap, point: &Point) {}
+impl Pathfinder {
+    pub fn new(grid: GridMap, start: Point, end: Point, algorithm: Algorithm) -> Pathfinder {
+        Pathfinder {
+            grid,
+            start,
+            end,
+            algorithm,
+        }
+    }
+
+    pub fn run(&self) {
+        match self.algorithm {
+            Algorithm::BreadthFirstSearch => {
+                breadth_first_search::run(&self.grid, &self.start, &self.end);
+            }
+            Algorithm::DepthFirstSearch => {
+                depth_first_search::run(&self.grid, &self.start, &self.end);
+            }
+            Algorithm::Dijkstra => {
+                dijkstra::run(&self.grid, &self.start, &self.end);
+            }
+            Algorithm::AStar => {
+                a_star::run(&self.grid, &self.start, &self.end);
+            }
+            Algorithm::GreedyBestFirstSearch => {
+                greedy_best_first_search::run(&self.grid, &self.start, &self.end);
+            }
+            Algorithm::BellmanFord => {
+                bellman_ford::run(&self.grid, &self.start, &self.end);
+            }
+        }
+    }
 }
 
 pub enum Algorithm {
@@ -101,6 +131,12 @@ pub struct Point {
     pub y: u16,
 }
 
+impl PartialEq for Point {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
+    }
+}
+
 impl Point {
     pub fn new(x: u16, y: u16) -> Point {
         Point { x, y }
@@ -155,6 +191,50 @@ impl GridMap {
             start: Point::new(0, 0),
             end: Point::new(0, 0),
         }
+    }
+
+    pub fn get_all_points(&self) -> Vec<Point> {
+        let mut points: Vec<Point> = Vec::new();
+        for row in &self.grid {
+            for element in row {
+                points.push(element.point);
+            }
+        }
+        points
+    }
+
+    pub fn get_surrounding_blocks(&self, point: &Point) -> Vec<(GridBlock, Point)> {
+        let mut blocks: Vec<(GridBlock, Point)> = Vec::new();
+
+        if point.x > 0 {
+            blocks.push((
+                self.grid[point.y as usize][point.x as usize - 1].grid.to_block(),
+                Point::new(point.x - 1, point.y),
+            ));
+        }
+
+        if point.x < self.size.width - 1 {
+            blocks.push((
+                self.grid[point.y as usize][point.x as usize + 1].grid.to_block(),
+                Point::new(point.x + 1, point.y),
+            ));
+        }
+
+        if point.y > 0 {
+            blocks.push((
+                self.grid[point.y as usize - 1][point.x as usize].grid.to_block(),
+                Point::new(point.x, point.y - 1),
+            ));
+        }
+
+        if point.y < self.size.height - 1 {
+            blocks.push((
+                self.grid[point.y as usize + 1][point.x as usize].grid.to_block(),
+                Point::new(point.x, point.y + 1),
+            ));
+        }
+
+        blocks
     }
 
     pub fn get_block(&self, point: &Point) -> &GridBlock {
