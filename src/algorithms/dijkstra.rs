@@ -64,4 +64,5 @@ pub fn run(mut grid: GridMap, start: &Point, end: &Point) {
     grid.set_block(&start, &GridBlock::Start);
     grid.set_block(&end, &GridBlock::End);
     grid.render();
+    println!("Path Length: {}", distance[end.y as usize][end.x as usize]);
 }
