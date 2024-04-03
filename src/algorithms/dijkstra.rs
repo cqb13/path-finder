@@ -46,6 +46,13 @@ pub fn run(mut grid: GridMap, start: &Point, end: &Point) {
     }
 
     let mut current = end.clone();
+
+    if distance[end.y as usize][end.x as usize] == i32::MAX {
+        grid.render();
+        println!("No path found");
+        return;
+    }
+
     while current.x != start.x || current.y != start.y {
         grid.set_block(&current, &GridBlock::Path);
         current = parent[current.y as usize][current.x as usize];
