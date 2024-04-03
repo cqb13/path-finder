@@ -6,6 +6,7 @@ use crate::algorithms::{Algorithm, GridBlock, GridMap, GridSize, Pathfinder, Poi
 use crate::display::setup::{config_setup, map_builder, MapBuilderMode};
 use crate::display::welcome::welcome;
 use crate::tui::confirm::Confirm;
+use crate::tui::refresh_display;
 
 pub struct SetupConfig {
     grid_size: GridSize,
@@ -37,6 +38,8 @@ fn main() {
     if !confirm_start {
         return;
     }
+
+    refresh_display(grid_map.full_size);
 
     let pathfinder = Pathfinder {
         start: grid_map.start,

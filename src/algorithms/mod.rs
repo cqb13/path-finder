@@ -25,7 +25,7 @@ impl Pathfinder {
         }
     }
 
-    pub fn run(&self) {
+    pub fn run(self) {
         match self.algorithm {
             Algorithm::BreadthFirstSearch => {
                 breadth_first_search::run(&self.grid, &self.start, &self.end);
@@ -34,7 +34,7 @@ impl Pathfinder {
                 depth_first_search::run(&self.grid, &self.start, &self.end);
             }
             Algorithm::Dijkstra => {
-                dijkstra::run(&self.grid, &self.start, &self.end);
+                dijkstra::run(self.grid, &self.start, &self.end);
             }
             Algorithm::AStar => {
                 a_star::run(&self.grid, &self.start, &self.end);
@@ -208,28 +208,36 @@ impl GridMap {
 
         if point.x > 0 {
             blocks.push((
-                self.grid[point.y as usize][point.x as usize - 1].grid.to_block(),
+                self.grid[point.y as usize][point.x as usize - 1]
+                    .grid
+                    .to_block(),
                 Point::new(point.x - 1, point.y),
             ));
         }
 
         if point.x < self.size.width - 1 {
             blocks.push((
-                self.grid[point.y as usize][point.x as usize + 1].grid.to_block(),
+                self.grid[point.y as usize][point.x as usize + 1]
+                    .grid
+                    .to_block(),
                 Point::new(point.x + 1, point.y),
             ));
         }
 
         if point.y > 0 {
             blocks.push((
-                self.grid[point.y as usize - 1][point.x as usize].grid.to_block(),
+                self.grid[point.y as usize - 1][point.x as usize]
+                    .grid
+                    .to_block(),
                 Point::new(point.x, point.y - 1),
             ));
         }
 
         if point.y < self.size.height - 1 {
             blocks.push((
-                self.grid[point.y as usize + 1][point.x as usize].grid.to_block(),
+                self.grid[point.y as usize + 1][point.x as usize]
+                    .grid
+                    .to_block(),
                 Point::new(point.x, point.y + 1),
             ));
         }
