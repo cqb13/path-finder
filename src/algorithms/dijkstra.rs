@@ -3,30 +3,20 @@ use crate::algorithms::GridMap;
 
 pub fn run(mut grid: GridMap, start: &Point, end: &Point) {
     let mut visited: Vec<Vec<bool>> = Vec::new();
-    for _ in 0..grid.size.height {
-        let mut row = Vec::new();
-        for _ in 0..grid.size.width {
-            row.push(false);
-        }
-        visited.push(row);
-    }
-
     let mut distance: Vec<Vec<i32>> = Vec::new();
-    for _ in 0..grid.size.height {
-        let mut row = Vec::new();
-        for _ in 0..grid.size.width {
-            row.push(i32::MAX);
-        }
-        distance.push(row);
-    }
-
     let mut parent: Vec<Vec<Point>> = Vec::new();
     for _ in 0..grid.size.height {
-        let mut row = Vec::new();
+        let mut row_vis = Vec::new();
+        let mut row_dis = Vec::new();
+        let mut row_par = Vec::new();
         for _ in 0..grid.size.width {
-            row.push(Point::new(0, 0));
+            row_vis.push(false);
+            row_dis.push(i32::MAX);
+            row_par.push(Point::new(0, 0));
         }
-        parent.push(row);
+        visited.push(row_vis);
+        distance.push(row_dis);
+        parent.push(row_par);
     }
 
     let mut queue: Vec<Point> = Vec::new();
