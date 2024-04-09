@@ -13,8 +13,8 @@ use crate::tui::refresh_display;
 pub struct OptionSelect {
     title: String,
     options: Vec<String>,
-    pub full_size: u16,
-    reset_size: u16,
+    pub full_size: i32,
+    reset_size: i32,
     manual_clear: bool,
 }
 

@@ -20,7 +20,7 @@ pub enum MapCrowding {
 }
 
 impl MapCrowding {
-    pub fn min_obstacle_size(&self) -> u16 {
+    pub fn min_obstacle_size(&self) -> i32 {
         match self {
             MapCrowding::Low => 1,
             MapCrowding::Medium => 2,
@@ -28,7 +28,7 @@ impl MapCrowding {
         }
     }
 
-    pub fn max_obstacle_size(&self) -> u16 {
+    pub fn max_obstacle_size(&self) -> i32 {
         match self {
             MapCrowding::Low => 2,
             MapCrowding::Medium => 3,
@@ -50,12 +50,12 @@ pub fn config_setup() -> SetupConfig {
         .set_message("Enter the gird width:")
         .set_min(5)
         .set_max(100)
-        .ask() as u16;
+        .ask() as i32;
     let height = NumberInput::new()
         .set_message("Enter the grid height:")
         .set_min(5)
         .set_max(100)
-        .ask() as u16;
+        .ask() as i32;
 
     let algorithm_selection = OptionSelect::new()
         .set_title("Select an algorithm:")

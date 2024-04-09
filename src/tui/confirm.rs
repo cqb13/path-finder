@@ -10,7 +10,7 @@ use crate::tui::refresh_display;
  */
 pub struct Confirm {
     message: String,
-    pub full_size: u16,
+    pub full_size: i32,
     manual_clear: bool,
 }
 

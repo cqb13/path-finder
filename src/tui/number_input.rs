@@ -13,8 +13,8 @@ pub struct NumberInput {
     message: String,
     min: i32,
     max: Option<i32>,
-    pub full_size: u16,
-    reset_size: u16,
+    pub full_size: i32,
+    reset_size: i32,
     manual_clear: bool,
 }
 

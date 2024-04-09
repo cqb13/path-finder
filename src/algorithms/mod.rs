@@ -127,8 +127,8 @@ impl GridBlock {
 
 #[derive(Debug, Clone, Copy)]
 pub struct Point {
-    pub x: u16,
-    pub y: u16,
+    pub x: i32,
+    pub y: i32,
 }
 
 impl PartialEq for Point {
@@ -138,7 +138,7 @@ impl PartialEq for Point {
 }
 
 impl Point {
-    pub fn new(x: u16, y: u16) -> Point {
+    pub fn new(x: i32, y: i32) -> Point {
         Point { x, y }
     }
 }
@@ -155,12 +155,12 @@ impl GridElement {
 }
 
 pub struct GridSize {
-    pub width: u16,
-    pub height: u16,
+    pub width: i32,
+    pub height: i32,
 }
 
 impl GridSize {
-    pub fn new(width: u16, height: u16) -> GridSize {
+    pub fn new(width: i32, height: i32) -> GridSize {
         GridSize { width, height }
     }
 }
@@ -168,7 +168,7 @@ impl GridSize {
 pub struct GridMap {
     pub grid: Vec<Vec<GridElement>>,
     pub size: GridSize,
-    pub full_size: u16,
+    pub full_size: i32,
     pub start: Point,
     pub end: Point,
 }
@@ -291,10 +291,10 @@ impl GridMap {
         let retries = 10;
 
         for _i1 in 0..n {
-            let mut x1: u16;
-            let mut y1: u16;
-            let mut x2: u16;
-            let mut y2: u16;
+            let mut x1: i32;
+            let mut y1: i32;
+            let mut x2: i32;
+            let mut y2: i32;
             for _ in 0..retries {
                 x1 = rand::thread_rng().gen_range(0..self.size.width);
                 y1 = rand::thread_rng().gen_range(0..self.size.height);
@@ -341,7 +341,7 @@ impl GridMap {
     pub fn render_with_selector(&self, point: &Point, selector: &GridBlock) {
         for (y, row) in self.grid.iter().enumerate() {
             for (x, element) in row.iter().enumerate() {
-                if point.x == x as u16 && point.y == y as u16 {
+                if point.x == x as i32 && point.y == y as i32 {
                     print!(" {} ", selector.to_visual_block());
                 } else {
                     print!(" {} ", element.grid.to_visual_block());
