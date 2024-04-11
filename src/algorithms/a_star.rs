@@ -23,7 +23,7 @@ pub fn run(grid: &GridMap, start: &Point, end: &Point) {
     let mut fscore = Vec::new();
     fscore.push((Point::new(start.x, start.y), heuristic(start, end)));
     fscore.append(&mut gscore.clone());
-
+    let temp_gscore = gscore.clone();
     while !open_set.is_empty() {
         let current = calculate_current_node(&open_set, &fscore);
         if current.0 == *end {
@@ -37,14 +37,23 @@ pub fn run(grid: &GridMap, start: &Point, end: &Point) {
             }
 
             let gscore_of_neighbor: Option<&(Point, i32)> =
-                gscore.iter().find(|x| x.0 == neighbor.1);
-            let gscore_of_current = gscore.iter().find(|x| x.0 == current.0);
+                temp_gscore.iter().find(|x| x.0 == neighbor.1);
+            let gscore_of_current = temp_gscore.iter().find(|x| x.0 == current.0);
             if gscore_of_neighbor.is_none() || gscore_of_current.is_none() {
                 panic!("Failed to find gscore of current of neighbor");
             }
             let tentative_gscore = gscore_of_current.unwrap().1 + 1;
 
             if tentative_gscore < gscore_of_neighbor.unwrap().1 {
+                came_from.push(&gscore_of_current.unwrap().0);
+
+                gscore
+                    .iter_mut()
+                    .find(|x| x.0 == neighbor.1)
+                    .map(|x| x.1 = tentative_gscore);
+                fscore.iter_mut().find(|x| x.0 == neighbor.1).unwrap().1 =
+                    tentative_gscore + heuristic(&neighbor.1, end);
+
                 if !open_set.contains(&&neighbor.1) {
                     open_set.push(&gscore_of_neighbor.unwrap().0);
                 }
